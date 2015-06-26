@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+ <meta charset="UTF-8"> 
+<html>
+<head>
+</head>
+<body>
+
+<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+
+<script>
+
+jQuery(document).ready(function() {
+    console.log( "ready!" );
+    
+	jQuery("#searchBtn").click(function(){
+   		 var data = {
+			"searchParam":	jQuery("#toSearch").val()
+                };
+
+               // alert(JSON.stringify(data));
+
+		 $.ajax({
+                url: 'http://192.168.1.67:3000/productSearch',
+                dataType: 'json',
+                type: 'POST',
+               // crossDomain: true,
+		
+                data: data,
+               success: function(response) {
+                  //alert(""+JSON.parse(data.hits.total));
+                 $("#results").empty();
+                //  $("#results").append("<p>Results for <b>" + $("#searchterm").val() + "</b></p>");
+		 console.log(response);
+		$.each(response,function(key,value)
+			{
+				 $("#results").html($("#results").val()+"\n"+value._source.id+"\t"+value._source.name+"\t"+value._source.age);
+			});
+               //   $("#results").html(response[0]._source.id+"\t"+response[0]._source.name +"\t"+response[0]._source.age);
+                }
+		
+              });
+	});
+
+	var input = document.querySelector('#toSearch');
+
+	
+
+	input.addEventListener('input', function()
+	{
+		var data = {
+			"searchParam":	input.value
+                };
+
+              
+
+		 $.ajax({
+               	 url: 'http://192.168.1.67:3000/productSearch',
+                dataType: 'json',
+                type: 'POST',
+               
+		
+                data: data,
+               success: function(response) {
+                 
+                $("#results").empty();
+                
+		
+		$.each(response,function(key,value)
+			{
+				//jQuery("#suggestionContainer ul").append("<li>"+value._source.name+"<li>");
+				 $("#results").html($("#results").val()+"\n"+value._source.id+"\t"+value._source.product_name+"\t"+value._source.age);
+			});
+              
+                },
+		error:function(request,status,errorThrown)
+		{
+		console.log
+		}
+  		 
+	});
+    });	
+
+});
+
+</script>
+<input id="toSearch" style="width:260px;"></input>
+<button id="searchBtn" name="search" type="submit">Search</button>
+<div id="suggestionContainer">
+<ul  style="list-style-type: none;margin-top: 0px;padding-left: 20px;">
+
+</ul>
+</div>
+<br>
+<br>
+<br>
+<textarea id="results" style="width:850px; height:450px" id="outputArea"> </textarea>
+
+</body>
+</html>
